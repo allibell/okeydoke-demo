@@ -1,0 +1,14 @@
+{
+    "@context": [
+        "https://w3id.org/security/v2",
+        "https://w3id.org/security/suites/jws-2020/v1"
+    ],
+    "id": "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA#g2-public",
+    "type": "JsonWebKey2020",
+    "controller": "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA",
+    "publicKeyJwk": {
+        "kty": "OKP",
+        "crv": "Bls12381G2",
+        "x": "if_hFvtkiLKcYGb9qyh3u3BwsTsnMPyCAY4QbC709eIcgDa6uFG6Pc2f6W0nVyBED38-MEICYkFJqil2kO9oensTGaih6iNy9kI3nRbMycOSBGIg5uLlJZjB3P3iGHKQ"
+     }
+}

@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
 );
+import 'source-map-support/register';
 root.render(
     <React.StrictMode>
         <RecoilRoot>
