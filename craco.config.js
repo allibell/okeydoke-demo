@@ -21,6 +21,7 @@ module.exports = {
             webpackConfig.resolve.fallback = { 
                 buffer: require.resolve('buffer/'),
                 crypto: require.resolve("crypto-browserify"),
+                path: require.resolve("path-browserify"),
                 stream: require.resolve("stream-browserify"),
                 util: require.resolve("util/"),
             };
