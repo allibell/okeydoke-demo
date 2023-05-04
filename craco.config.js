@@ -19,13 +19,14 @@ module.exports = {
             });
 
             webpackConfig.resolve.fallback = { 
+                buffer: require.resolve('buffer/'),
                 crypto: require.resolve("crypto-browserify"),
-                // process: require.resolve("process/browser.js"),
                 stream: require.resolve("stream-browserify"),
                 util: require.resolve("util/"),
             };
             webpackConfig.plugins = [
                 new webpack.ProvidePlugin({
+                    Buffer: ['buffer', 'Buffer'],
                     process: 'process/browser.js',
                 }),
                 new MiniCssExtractPlugin(),

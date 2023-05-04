@@ -1,0 +1,50 @@
+{
+    "@context": "https://w3id.org/did-resolution/v1",
+    "didDocument": {
+        "id": "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA",
+        "@context": [
+            "https://www.w3.org/ns/did/v1",
+            {
+                "@base": "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA"
+            }
+        ],
+        "verificationMethod": [
+            {
+                "id": "#g1-public",
+                "controller": "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA",
+                "type": "JsonWebKey2020",
+                "publicKeyJwk": {
+                    "kty": "OKP",
+                    "crv": "Bls12381G1",
+                    "x": "rhjn1ZVVicG3qMntK8bH2s5Huf2uK0FoZsI9T9nxoo6vpbc9Ow9U1WCNO0_JLt34"
+                }
+            },
+            {
+                "id": "#g2-public",
+                "controller": "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA",
+                "type": "JsonWebKey2020",
+                "publicKeyJwk": {
+                    "kty": "OKP",
+                    "crv": "Bls12381G2",
+                    "x": "if_hFvtkiLKcYGb9qyh3u3BwsTsnMPyCAY4QbC709eIcgDa6uFG6Pc2f6W0nVyBED38-MEICYkFJqil2kO9oensTGaih6iNy9kI3nRbMycOSBGIg5uLlJZjB3P3iGHKQ"
+                }
+            }
+        ],
+        "authentication": [
+            "#g1-public",
+            "#g2-public"
+        ],
+        "assertionMethod": [
+            "#g1-public",
+            "#g2-public"
+        ]
+    },
+    "didDocumentMetadata": {
+        "method": {
+            "published": true,
+            "recoveryCommitment": "EiA9kgs7b0thRlnDjSQABhDOjNLx_xcpvqhFDta-A-vpZw",
+            "updateCommitment": "EiBLk0VkBGB2ylv2ICU-Xia18qa_jq5CuClwCP--w3AF7w"
+        },
+        "canonicalId": "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA"
+    }
+}
