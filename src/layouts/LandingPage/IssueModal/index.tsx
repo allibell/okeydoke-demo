@@ -123,7 +123,7 @@ export const IssueModal = () => {
         isSuccess,
         reset,
         mutate: issueCredential,
-    } = useMutation(({ email, name, grade, type }: IssueValues) =>
+    } = useMutation(({ email, name, grade, type }: IssueValues) => 
         handleIssueCredential(email, name, grade, type)
     );
 
@@ -135,7 +135,7 @@ export const IssueModal = () => {
             setTimeout(() => {
                 setSuccessModalVisible(true);
             }, 200);
-        }
+        } 
     }, [isSuccess, isVisible]);
 
     const buttonEnabled = useMemo(() => {
