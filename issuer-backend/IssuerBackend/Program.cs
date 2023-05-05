@@ -23,6 +23,8 @@ app.MapPost("/api/issue", async (string email, string name, FoodClass foodType, 
 {
     try
     {
+        // TODO: this should throw a clear error when it doesn't work 
+        // my example: The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.
         var authToken = Environment.GetEnvironmentVariable("TRINSIC_AUTHTOKEN");
         if (authToken is null)
         {
@@ -61,9 +63,10 @@ app.MapPost("/api/issue", async (string email, string name, FoodClass foodType, 
                 SendNotification = true
             });
         }
-        catch
+        catch (Exception ex)
         {
-            throw new Exception("Error issuing credential");
+            Console.WriteLine("Error: " + ex.Message);
+            throw new Exception("Error issuing credential: " + ex.Message);
         }
 
         return new IssueResponse()
