@@ -1,11 +1,7 @@
 import { useMutation } from "react-query";
 import { CredentialDerivedProof } from "../../models/credential";
 import { verify, purposes, extendContextLoader } from "jsonld-signatures";
-import {
-    Bls12381G2KeyPair,
-    BbsBlsSignatureProof2020,
-} from "@mattrglobal/jsonld-signatures-bbs";
-import { DID, resolve } from '@decentralized-identity/ion-tools';
+import { BbsBlsSignatureProof2020 } from "@mattrglobal/jsonld-signatures-bbs";
 import bbsContext from "./data/bbs.json";
 import basicBbsContext from "./data/basic-bbs.json";
 import credentialsContext from "./data/credentials.json";
@@ -14,8 +10,6 @@ import customIonIssuerContext from "./data/customIonIssuerContext.json";
 import customIonIssuerContextJWK from "./data/customIonIssuerContextJWK.json";
 import didResolutionContext from "./data/didResolutionContext.json";
 import didContext from "./data/didContext.json";
-import keyPairOptions from "./data/keyPair.json";
-import foodSalvagerLicenseContext from "./data/foodSalvagerLicenseContext.json";
 
 const documents = {
     "https://w3id.org/security/bbs/v1": bbsContext,
@@ -26,7 +20,6 @@ const documents = {
     "https://www.w3.org/ns/did/v1": didContext,
     "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA": customIonIssuerContext,
     "did:ion:EiDa3yYaZFuVyKNQ42eHo6QuAqJKTBOaQwwaLx7RzcJODA#g2-public": customIonIssuerContextJWK,
-    "https://schema.trinsic.cloud/okeydoke/foodsalvagerlicense": foodSalvagerLicenseContext,
 };
 
 const customDocLoader = async (url: string) => {
@@ -62,10 +55,9 @@ const handleVerifyCredential = async (
 ): Promise<any> => {
     console.log(JSON.stringify(derivedProof));
     // TODO: use Mattr's open source verify instead of Trinsic's
-    const keyPair = await new Bls12381G2KeyPair(keyPairOptions);
-      //Verify the proof
+    // Verify the proof
     console.log(JSON.stringify(derivedProof, null, 2));
-    const suite = new BbsBlsSignatureProof2020({key: keyPair});
+    const suite = new BbsBlsSignatureProof2020();
     const response = await verify(derivedProof, {
         suite: suite,
         purpose: new purposes.AssertionProofPurpose(),
@@ -74,20 +66,20 @@ const handleVerifyCredential = async (
     console.log(JSON.stringify(response));
 
     if (!response.verified) {
-        console.log("@@@@ Uh Oh... @@@@@");
         throw Error("Unable to verify credential.");
+    } else {
+        return {
+            isValid: true,
+            validationMessages: [],
+            validationResults: {
+                CredentialStatus: { isValid: true, messages: [] },
+                IssuerIsSigner: { isValid: true, messages: [] },
+                SchemaConformance: { isValid: true, messages: [] },
+                SignatureVerification: { isValid: true, messages: [] }
+            }
+        };
     }
 
-    return {
-        isValid: true,
-        validationMessages: [],
-        validationResults: {
-            CredentialStatus: { isValid: true, messages: [] },
-            IssuerIsSigner: { isValid: true, messages: [] },
-            SchemaConformance: { isValid: true, messages: [] },
-            SignatureVerification: { isValid: true, messages: [] }
-        }
-    };
 };
 
 export const useVerifyCredential = (onError?: () => void) => {
