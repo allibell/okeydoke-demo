@@ -145,3 +145,6 @@ issuer-backend/IssuerBackend/obj/
 issuer-backend/IssuerBackend/deploy.ps1
 issuer-backend/IssuerBackend/publish.zip
 issuer-backend/IssuerBackend/publish
+
+webauthn-backend/WebAuthnBackend/bin/
+webauthn-backend/WebAuthnBackend/obj/
