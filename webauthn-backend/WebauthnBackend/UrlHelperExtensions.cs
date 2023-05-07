@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Fido2Demo;
+namespace WebAuthnBackend;
 
 public static class UrlHelperExtensions
 {

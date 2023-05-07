@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 
-namespace Fido2Demo;
+namespace WebAuthnBackend;
 
 public static class RouteHelperExtensions
 {
