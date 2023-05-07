@@ -3,11 +3,14 @@
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>39589262-6aa1-4bde-aaa9-403a7542cf63</UserSecretsId>
     <RootNamespace>WebAuthnBackend</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fido2.AspNet" Version="3.0.1"/>
     <PackageReference Include="Fido2.Models" Version="3.0.1"/>
     <PackageReference Include="Fido2" Version="3.0.1"/>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1"/>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2"/>

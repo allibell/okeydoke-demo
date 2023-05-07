@@ -11,6 +11,7 @@ import {
 } from "../../../atoms/modals";
 import { useLockBg } from "../../../hooks/custom/useLockBackground";
 import EmailInput from "./EmailInput";
+import { start } from "repl";
 
 const Animations = {
     container: {
@@ -50,6 +51,11 @@ interface IssueValues {
     type: string;
 }
 
+const startRegistration = async () => {
+    const registrationOptionsResp = await fetch("https://localhost:44329/makeCredentialOptions", { method: "POST" });
+    console.log("@@@@ Hi registrationOptionsResp", registrationOptionsResp);
+}
+
 const handleIssueCredential = async (
     email: IssueValues["email"],
     name: IssueValues["name"],
@@ -58,7 +64,7 @@ const handleIssueCredential = async (
 ): Promise<{
     success: boolean;
 }> => {
-    let url = "https://okeydokeissuer.azurewebsites.net/api/issue";
+    let url = "https://localhost:7133/api/issue";
     url += `?email=${encodeURIComponent(email)}&name=${encodeURI(
         name
     )}&grade=${grade}&foodType=${type}`;
@@ -73,6 +79,7 @@ const handleIssueCredential = async (
         throw new Error(json.error)
     }
     else {
+        await startRegistration();
         return json;
     }
 };
