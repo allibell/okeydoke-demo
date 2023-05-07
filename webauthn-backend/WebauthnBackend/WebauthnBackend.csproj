@@ -12,10 +12,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7"/>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1"/>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2"/>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0"/>
-  </ItemGroup>
 </Project>

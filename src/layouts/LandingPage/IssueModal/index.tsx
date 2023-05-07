@@ -53,7 +53,10 @@ interface IssueValues {
 
 const startRegistration = async () => {
     const registrationOptionsResp = await fetch("https://localhost:44329/makeCredentialOptions", { method: "POST" });
-    console.log("@@@@ Hi registrationOptionsResp", registrationOptionsResp);
+    let json = await registrationOptionsResp.json();
+    const wnd: any = window;
+    wnd.registrationOptionsRespJson = json;
+    console.log("@@@@ Hi registrationOptionsResp", registrationOptionsResp, json);
 }
 
 const handleIssueCredential = async (
