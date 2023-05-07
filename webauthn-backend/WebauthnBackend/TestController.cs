@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
-namespace Fido2Demo;
+namespace WebAuthnBackend;
 
 public class TestController : Controller
 {

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using static Fido2NetLib.Fido2;
 
-namespace Fido2Demo;
+namespace WebAuthnBackend;
 
 [Route("api/[controller]")]
 public class MyController : Controller

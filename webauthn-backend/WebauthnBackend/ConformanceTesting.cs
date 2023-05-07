@@ -2,7 +2,7 @@
 
 using Fido2NetLib;
 
-namespace Fido2Demo;
+namespace WebAuthnBackend;
 
 public static class ConformanceTesting
 {

@@ -14,7 +14,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Fido2Demo": {
+    "WebAuthnBackend": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>39589262-6aa1-4bde-aaa9-403a7542cf63</UserSecretsId>
-    <RootNamespace>WebAuthnBackend</RootNamespace>
+    <RootNamespace>WebauthnBackend</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Fido2.AspNet" Version="3.0.1"/>
