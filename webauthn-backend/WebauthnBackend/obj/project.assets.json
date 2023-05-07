@@ -9491,11 +9491,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebauthnBackend/Demo.csproj",
-      "projectName": "Demo",
-      "projectPath": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebauthnBackend/Demo.csproj",
+      "projectUniqueName": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebAuthnBackend/WebAuthnBackend.csproj",
+      "projectName": "WebAuthnBackend",
+      "projectPath": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebAuthnBackend/WebAuthnBackend.csproj",
       "packagesPath": "/Users/allibell/.nuget/packages/",
-      "outputPath": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebauthnBackend/obj/",
+      "outputPath": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebAuthnBackend/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/allibell/.nuget/NuGet/NuGet.Config"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lIG7CCl6qF1MmwEEg0H+HpL0CtokVdMohfWxHwFNJrWQKo6CCB2In8GCHFesMkgV1bXdmA2eoN4w02/Zy/0cEA==",
+  "dgSpecHash": "KhiniSlpTzF8kWUtPEvAk9WfcZ5MpiJcqy4Z3sQQI4slpSv4MWHRhbYDwJvOH10c40m+jEeWMgLskBGtNEoOTw==",
   "success": true,
-  "projectFilePath": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebauthnBackend/Demo.csproj",
+  "projectFilePath": "/Users/allibell/dev/okeydoke-demo/webauthn-backend/WebAuthnBackend/WebAuthnBackend.csproj",
   "expectedPackageFiles": [
     "/Users/allibell/.nuget/packages/fido2/3.0.1/fido2.3.0.1.nupkg.sha512",
     "/Users/allibell/.nuget/packages/fido2.aspnet/3.0.1/fido2.aspnet.3.0.1.nupkg.sha512",

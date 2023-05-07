@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "wvsBZJ4/YPda8EU3wBu4zRTB2FXBUNGiPIVGTZecUfY=",
-  "Source": "Demo",
-  "BasePath": "_content/Demo",
+  "Hash": "975zFh3/dnP9uO0WInstMJ0/S7EZi7KGtmTaTo/VAmE=",
+  "Source": "WebAuthnBackend",
+  "BasePath": "_content/WebAuthnBackend",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
