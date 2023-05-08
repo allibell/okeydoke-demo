@@ -51,12 +51,20 @@ interface IssueValues {
     type: string;
 }
 
-const startRegistration = async () => {
-    const registrationOptionsResp = await fetch("https://localhost:44329/makeCredentialOptions", { method: "POST" });
-    let json = await registrationOptionsResp.json();
-    const wnd: any = window;
-    wnd.registrationOptionsRespJson = json;
-    console.log("@@@@ Hi registrationOptionsResp", registrationOptionsResp, json);
+const getMakeCredentialOptions = async (email: string, name: string) => {
+    const makeCredentialOptionsResp = await fetch("https://localhost:44329/makeCredentialOptions", { 
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: email,
+            displayName: name,
+        })
+    });
+    const json = await makeCredentialOptionsResp.json();
+    console.log("makeCredentialOptionsResp", makeCredentialOptionsResp, json);
+    return json;
 }
 
 const handleIssueCredential = async (
@@ -82,7 +90,6 @@ const handleIssueCredential = async (
         throw new Error(json.error)
     }
     else {
-        await startRegistration();
         return json;
     }
 };
