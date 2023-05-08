@@ -33,17 +33,23 @@ public class MyController : Controller
         return string.Format("{0}{1}", e.Message, e.InnerException != null ? " (" + e.InnerException.Message + ")" : "");
     }
 
+    public class CredentialOptionsRequest
+    {
+        public string Username { get; set; }
+        public string DisplayName { get; set; }
+        public string? AttType { get; set; }
+        public string? AuthType { get; set; }
+        public string? UserVerification { get; set; }
+    }
     [HttpPost]
     [Route("/makeCredentialOptions")]
-    public JsonResult MakeCredentialOptions([FromForm] string username,
-                                            [FromForm] string displayName,
-                                            [FromForm] string attType,
-                                            [FromForm] string authType,
-                                            [FromForm] string residentKey,
-                                            [FromForm] string userVerification)
+    public JsonResult MakeCredentialOptions([FromBody] CredentialOptionsRequest request)
     {
         try
         {
+            string username = request.Username;
+            string displayName = request.DisplayName;
+            Console.WriteLine("username: " + username + ", displayName: " + displayName);
 
             if (string.IsNullOrEmpty(username))
             {
@@ -62,14 +68,17 @@ public class MyController : Controller
             var existingKeys = DemoStorage.GetCredentialsByUser(user).Select(c => c.Descriptor).ToList();
 
             // 3. Create options
+            var userVerificationRequirement = !string.IsNullOrEmpty(request.UserVerification) 
+                ? request.UserVerification.ToEnum<UserVerificationRequirement>() : UserVerificationRequirement.Preferred;
+            var attType = !string.IsNullOrEmpty(request.AttType) 
+                ? request.AttType.ToEnum<AttestationConveyancePreference>() : AttestationConveyancePreference.None;
             var authenticatorSelection = new AuthenticatorSelection
             {
                 RequireResidentKey = true,
-                UserVerification = userVerification.ToEnum<UserVerificationRequirement>()
+                UserVerification = userVerificationRequirement
             };
-
-            if (!string.IsNullOrEmpty(authType))
-                authenticatorSelection.AuthenticatorAttachment = authType.ToEnum<AuthenticatorAttachment>();
+            if (!string.IsNullOrEmpty(request.AuthType))
+                authenticatorSelection.AuthenticatorAttachment = request.AuthType.ToEnum<AuthenticatorAttachment>();
 
             var exts = new AuthenticationExtensionsClientInputs() 
             { 
@@ -77,7 +86,8 @@ public class MyController : Controller
                 UserVerificationMethod = true, 
             };
 
-            var options = _fido2.RequestNewCredential(user, existingKeys, authenticatorSelection, attType.ToEnum<AttestationConveyancePreference>(), exts);
+            var options = _fido2.RequestNewCredential(user, existingKeys, authenticatorSelection, attType, exts);
+            Console.WriteLine("Here are the options: " + options.ToJson());
 
             // 4. Temporarily store options, session/in-memory cache/redis/db
             HttpContext.Session.SetString("fido2.attestationOptions", options.ToJson());

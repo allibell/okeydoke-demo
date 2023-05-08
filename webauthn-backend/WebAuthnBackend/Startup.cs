@@ -24,11 +24,6 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddRazorPages(opts =>
-        {
-            // we don't care about antiforgery in the demo
-            opts.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
-        });
 
         // Use the in-memory implementation of IDistributedCache.
         services.AddMemoryCache();
@@ -60,11 +55,18 @@ public class Startup
                 //TODO: any specific config you want for accessing the MDS
             });
         });
+
+        services.AddRazorPages(opts =>
+        {
+            // we don't care about antiforgery in the demo
+            opts.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -75,8 +77,8 @@ public class Startup
             app.UseRewriter(new RewriteOptions().AddRedirectToWWwIfPasswordlessDomain());
         }
 
-        app.UseSession();
         app.UseStaticFiles();
+        app.UseSession();
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
