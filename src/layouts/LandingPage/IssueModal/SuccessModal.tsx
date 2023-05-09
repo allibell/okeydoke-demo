@@ -2,8 +2,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "react-feather";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { useState, useEffect } from "react";
 import { isIssueSuccessModalVisibleState } from "../../../atoms/modals";
 import { useLockBg } from "../../../hooks/custom/useLockBackground";
+import { startAuthentication, startRegistration } from "@simplewebauthn/browser";
+
 
 const Animations = {
     container: {
@@ -26,7 +29,76 @@ const Animations = {
     },
 };
 
-export const SuccessModal = () => {
+
+
+const webauthnRegister = async (email: string, name: string) => {
+    /**
+       * This value is for sake of demonstration. Pick 32 random
+       * bytes. `salt` can be static for your site or unique per
+       * credential depending on your needs.
+    */
+    const firstSalt = new Uint8Array(32).fill(68).buffer;
+
+    const makeCredentialOptionsResp = await fetch("https://localhost:44329/makeCredentialOptions", { 
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            username: email,
+            displayName: name,
+        })
+    });
+    const optsJson = await makeCredentialOptionsResp.json();
+    console.log("makeCredentialOptionsResp", makeCredentialOptionsResp, optsJson);
+    var newOpts = optsJson;
+    newOpts.extensions.largeBlob = { support: 'required' }
+    newOpts.extensions.prf = { eval: { first: firstSalt } }
+    console.log("newOpts", newOpts)
+
+    const attestationResp = await startRegistration(newOpts);
+    console.log("attestationResp", attestationResp);
+    // Simply log the supported extensions
+    // TODO: add actual logic to use when supported (e.g. actually use PRF)
+    if (attestationResp.clientExtensionResults.largeBlob.supported === true) {
+        console.log("🥳 Largeblob supported!")
+    } else {
+        console.log("😢 Largeblob not supported!")
+    }
+    if (attestationResp.clientExtensionResults.prf.enabled === true) {
+        console.log("🥳 PRF supported!")
+    } else {
+        console.log("😢 PRF not supported!")
+    }
+
+    // not sure if this is the same as /verify-credential in MySimpleWebAuthN
+    const verificationResp = await fetch('https://localhost:44329/makeCredential', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(attestationResp),
+      });
+
+    const verificationJSON = await verificationResp.json();
+    console.log('Verification Response', JSON.stringify(verificationJSON, null, 2));
+
+    if (verificationJSON && verificationJSON.verified) {
+        console.log(`Authenticator registered!`);
+    }
+
+}
+
+const webauthnRegisterCredential = async (attestationResp: any) => {
+
+}
+
+interface SuccessModalState {
+    farmerName: string;
+    userEmail: string;
+  }
+
+export const SuccessModal = ({ farmerName, userEmail }: SuccessModalState) => {
     const [isVisible, setModalVisible] = useRecoilState(
         isIssueSuccessModalVisibleState
     );
@@ -100,6 +172,27 @@ export const SuccessModal = () => {
                                         </div>
                                         <div className="flex-1 pr-12 text-lg font-medium">
                                             Use my credential
+                                        </div>
+                                    </button>
+                                    <button
+                                        className={`group flex h-full w-full flex-row items-center space-x-6 rounded-lg
+                                            bg-blue-300 px-4 py-3 text-white hover:border-2 hover:border-blue-300 hover:bg-white hover:py-2.5 hover:text-blue-300`}
+                                        onClick={async () => {
+                                            await webauthnRegister(userEmail, farmerName);
+                                        }}
+                                    >
+                                        <div className="relative">
+                                            <img
+                                                src="images/trinsic-logo-white.png"
+                                                className={`block w-6 group-hover:hidden`}
+                                            />
+                                            <img
+                                                src="images/trinsic-logo-blue.png"
+                                                className={`hidden h-[35.22px] w-6 group-hover:block`}
+                                            />
+                                        </div>
+                                        <div className="flex-1 pr-12 text-lg font-medium">
+                                            Securely save my credential
                                         </div>
                                     </button>
                                 </div>

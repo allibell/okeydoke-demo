@@ -87,9 +87,9 @@ public class MyController : Controller
             };
 
             var options = _fido2.RequestNewCredential(user, existingKeys, authenticatorSelection, attType, exts);
-            Console.WriteLine("Here are the options: " + options.ToJson());
 
             // 4. Temporarily store options, session/in-memory cache/redis/db
+            // Actually don't do this since we 
             HttpContext.Session.SetString("fido2.attestationOptions", options.ToJson());
 
             // 5. return options to client
