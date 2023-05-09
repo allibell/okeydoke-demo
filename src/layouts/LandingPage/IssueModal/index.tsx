@@ -84,13 +84,15 @@ interface IssueModalProps {
     farmerName: string;
     grade: string;
     produceType: string;
+    credentialJson: string;
     setUserEmail: (email: string) => void;
     setFarmerName: (name: string) => void;
     setGrade: (grade: string) => void;
     setProduceType: (produceType: string) => void;
+    setCredentialJson: (credentialJson: string) => void;
   }
 
-export const IssueModal = ({ userEmail, farmerName, grade, produceType, setUserEmail, setFarmerName, setGrade, setProduceType }: IssueModalProps) => {
+export const IssueModal = ({ userEmail, farmerName, grade, produceType, credentialJson, setUserEmail, setFarmerName, setGrade, setProduceType, setCredentialJson }: IssueModalProps) => {
     const [isVisible, setModalVisible] = useRecoilState(
         isIssueModalVisibleState
     );
@@ -114,6 +116,34 @@ export const IssueModal = ({ userEmail, farmerName, grade, produceType, setUserE
             else setGrade("C");
         }
     }, [isVisible]);
+
+    const handleIssueCredential = async (
+        email: IssueValues["email"],
+        name: IssueValues["name"],
+        grade: IssueValues["grade"],
+        type: IssueValues["type"]
+    ): Promise<{
+        success: boolean;
+    }> => {
+        let url = "https:/localhost:7133/api/issue";
+        url += `?email=${encodeURIComponent(email)}&name=${encodeURI(
+            name
+        )}&grade=${grade}&foodType=${type}`;
+        const response = await fetch(url, { method: "POST" });
+        const wnd: any = window;
+        wnd.blah = response;
+    
+        // We expect a response in the form of { success: boolean, error?: string }
+        // If there was an error here, throw it so that the React mutation can handle it
+        let json = await response.json();
+        if (!json.success) {
+            throw new Error(json.error)
+        }
+        else {
+            setCredentialJson(JSON.stringify(json));
+            return json;
+        }
+    };
 
     const isEmailValid = useMemo(() => {
         if (userEmail.length === 0) return true;
