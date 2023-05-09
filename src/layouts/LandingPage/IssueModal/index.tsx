@@ -51,21 +51,6 @@ interface IssueValues {
     type: string;
 }
 
-const getMakeCredentialOptions = async (email: string, name: string) => {
-    const makeCredentialOptionsResp = await fetch("https://localhost:44329/makeCredentialOptions", { 
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            username: email,
-            displayName: name,
-        })
-    });
-    const json = await makeCredentialOptionsResp.json();
-    console.log("makeCredentialOptionsResp", makeCredentialOptionsResp, json);
-    return json;
-}
 
 const handleIssueCredential = async (
     email: IssueValues["email"],
@@ -94,7 +79,18 @@ const handleIssueCredential = async (
     }
 };
 
-export const IssueModal = () => {
+interface IssueModalProps {
+    userEmail: string;
+    farmerName: string;
+    grade: string;
+    produceType: string;
+    setUserEmail: (email: string) => void;
+    setFarmerName: (name: string) => void;
+    setGrade: (grade: string) => void;
+    setProduceType: (produceType: string) => void;
+  }
+
+export const IssueModal = ({ userEmail, farmerName, grade, produceType, setUserEmail, setFarmerName, setGrade, setProduceType }: IssueModalProps) => {
     const [isVisible, setModalVisible] = useRecoilState(
         isIssueModalVisibleState
     );
@@ -103,11 +99,6 @@ export const IssueModal = () => {
     );
 
     useLockBg(isVisible);
-
-    const [grade, setGrade] = useState("A");
-    const [produceType, setProduceType] = useState("Artichoke");
-    const [farmerName, setFarmerName] = useState("John Doe");
-    const [userEmail, setUserEmail] = useState("");
 
     const navigate = useNavigate();
 

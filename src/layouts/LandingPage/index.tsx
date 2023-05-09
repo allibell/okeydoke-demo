@@ -1,8 +1,21 @@
 import ActionList from "./ActionList";
 import { IssueModal } from "./IssueModal";
 import { SuccessModal } from "./IssueModal/SuccessModal";
+import { useState } from "react";
 
 const LandingPage = () => {
+    const [farmerName, setFarmerName] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [grade, setGrade] = useState("A");
+    const [produceType, setProduceType] = useState("Artichoke");
+
+    const handleUserEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setUserEmail(event.target.value);
+      };
+    const handleFarmerNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFarmerName(event.target.value);
+    };
+
     return (
         <div className="h-full w-full bg-light-bg">
             <div className="p-8 md:p-12">
@@ -27,8 +40,13 @@ const LandingPage = () => {
                     </a>
                 </div>
             </div>
-            <IssueModal />
-            <SuccessModal />
+            <IssueModal 
+                userEmail={userEmail} farmerName={farmerName} 
+                grade={grade} produceType={produceType} 
+                setUserEmail={setUserEmail} setFarmerName={setFarmerName}
+                setGrade={setGrade} setProduceType={setProduceType}
+            />
+            <SuccessModal userEmail={userEmail} farmerName={farmerName} />
         </div>
     );
 };
