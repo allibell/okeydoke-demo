@@ -6,6 +6,7 @@ import { useState } from "react";
 const LandingPage = () => {
     const [farmerName, setFarmerName] = useState("");
     const [userEmail, setUserEmail] = useState("");
+    const [credentialJson, setCredentialJson] = useState("");
     const [grade, setGrade] = useState("A");
     const [produceType, setProduceType] = useState("Artichoke");
 
@@ -42,11 +43,12 @@ const LandingPage = () => {
             </div>
             <IssueModal 
                 userEmail={userEmail} farmerName={farmerName} 
-                grade={grade} produceType={produceType} 
+                grade={grade} produceType={produceType} credentialJson={credentialJson}
                 setUserEmail={setUserEmail} setFarmerName={setFarmerName}
-                setGrade={setGrade} setProduceType={setProduceType}
+                setGrade={setGrade} setProduceType={setProduceType} setCredentialJson={setCredentialJson}
             />
-            <SuccessModal userEmail={userEmail} farmerName={farmerName} />
+            <SuccessModal userEmail={userEmail} farmerName={farmerName} credentialJson={credentialJson} />
+            {/* <SendSuccessModal /> */}
         </div>
     );
 };

@@ -19,6 +19,52 @@ app.UseCors((corsBuilder) =>
 });
 
 app.MapGet("/", () => "👋 Hi!");
+app.MapPost("/api/send", async (string email, string documentJson) =>
+{
+    try
+    {
+        var authToken = Environment.GetEnvironmentVariable("TRINSIC_AUTHTOKEN");
+        if (authToken is null)
+        {
+            throw new Exception("Web app configuration error");
+        }
+
+        if (string.IsNullOrWhiteSpace(email) || !(new EmailAddressAttribute().IsValid(email)))
+        {
+            throw new ArgumentException("Invalid email");
+        }
+        
+        try
+        {
+            var trinsic = new TrinsicService().SetAuthToken(authToken);
+
+            var sendResponse = await trinsic.Credential.SendAsync(new()
+            {
+                Email = email,
+                DocumentJson = documentJson,
+                SendNotification = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+            throw new Exception("Error issuing credential: " + ex.Message);
+        }
+
+        return new IssueResponse()
+        {
+            Success = true
+        };
+    }
+    catch (Exception e)
+    {
+        return new IssueResponse()
+        {
+            Success = false,
+            Error = e.Message
+        };
+    }
+});
 app.MapPost("/api/issue", async (string email, string name, FoodClass foodType, FoodGrade grade) =>
 {
     try
@@ -56,12 +102,7 @@ app.MapPost("/api/issue", async (string email, string name, FoodClass foodType, 
                 })
             });
 
-            var sendResponse = await trinsic.Credential.SendAsync(new()
-            {
-                Email = email,
-                DocumentJson = issueResponse.DocumentJson,
-                SendNotification = true
-            });
+
         }
         catch (Exception ex)
         {
