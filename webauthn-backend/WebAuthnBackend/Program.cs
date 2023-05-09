@@ -8,22 +8,32 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        CreateHostBuilder(args).Build();
-
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddMemoryCache();
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddControllers();
         builder.Services.AddCors();
 
-        // Set up Fido2 in dependency injection container
-        var config = new Fido2Configuration()
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+        var fidoConfig = config.GetSection("fido2").Get<Fido2Configuration>();
+        builder.Services.AddFido2(options =>
         {
-            ServerDomain = "localhost",
-            ServerName = "WebAuthnBackend",
-            Origin = "https://localhost:44329"
-        };
-        builder.Services.AddSingleton<IFido2>(new Fido2(config));
+            options.ServerDomain = fidoConfig.ServerDomain;
+            options.ServerName = fidoConfig.ServerName;
+            options.Origins = fidoConfig.Origins;
+            options.TimestampDriftTolerance = fidoConfig.TimestampDriftTolerance;
+            options.MDSCacheDirPath = fidoConfig.MDSCacheDirPath;
+        })
+        .AddCachedMetadataService(config =>
+        {
+            config.AddFidoMetadataRepository(httpClientBuilder =>
+            {
+                //TODO: any specific config you want for accessing the MDS
+            });
+        });
+
         builder.Services.AddSession(options =>
         {
             // Set a short timeout for easy testing.
@@ -37,6 +47,9 @@ public class Program
         });
 
         var app = builder.Build();
+        app.UseSession();
+        app.UseStaticFiles();
+        app.UseRouting();
         app.UseCors((corsBuilder) =>
         {
             corsBuilder.AllowAnyHeader();
@@ -45,22 +58,11 @@ public class Program
             corsBuilder.Build();
         });
 
-        app.UseRouting();
-        app.UseSession();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
         });
         app.MapGet("/", () => "👋 Hi!");
         app.Run();
-    }
-
-    public static IHostBuilder CreateHostBuilder(string[] args)
-    {
-        return Host.CreateDefaultBuilder(args)
-                   .ConfigureWebHostDefaults(webBuilder =>
-                   {
-                       webBuilder.UseStartup<Startup>();
-                   });
     }
 }
