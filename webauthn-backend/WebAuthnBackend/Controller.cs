@@ -159,21 +159,31 @@ public class MyController : Controller
         }
     }
 
+    public class AssertionOptionsRequest
+    {
+        public string Username { get; set; }
+        public string UserVerification { get; set; }
+    }
     [HttpPost]
     [Route("/assertionOptions")]
-    public ActionResult AssertionOptionsPost([FromForm] string username, [FromForm] string userVerification)
+    public ActionResult AssertionOptionsPost([FromBody] AssertionOptionsRequest request)
     {
+        Console.WriteLine("@@@@ HALP");
         try
         {
             var existingCredentials = new List<PublicKeyCredentialDescriptor>();
 
-            if (!string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(request.Username)) {
+                throw new ArgumentException("Username was not provided");
+            }
+            else
             {
                 // 1. Get user from DB
-                var user = DemoStorage.GetUser(username) ?? throw new ArgumentException("Username was not registered");
+                var user = DemoStorage.GetUser(request.Username) ?? throw new ArgumentException("Username was not registered");
 
                 // 2. Get registered credentials from database
                 existingCredentials = DemoStorage.GetCredentialsByUser(user).Select(c => c.Descriptor).ToList();
+                Console.WriteLine("existingCredentials: " + existingCredentials);
             }
 
             var exts = new AuthenticationExtensionsClientInputs()
@@ -182,7 +192,8 @@ public class MyController : Controller
             };
 
             // 3. Create options
-            var uv = string.IsNullOrEmpty(userVerification) ? UserVerificationRequirement.Discouraged : userVerification.ToEnum<UserVerificationRequirement>();
+            var uv = string.IsNullOrEmpty(request.UserVerification) 
+                ? UserVerificationRequirement.Required : request.UserVerification.ToEnum<UserVerificationRequirement>();
             var options = _fido2.GetAssertionOptions(
                 existingCredentials,
                 uv,
@@ -190,7 +201,8 @@ public class MyController : Controller
             );
 
             // 4. Temporarily store options, session/in-memory cache/redis/db
-            HttpContext.Session.SetString("fido2.assertionOptions", options.ToJson());
+            // TODO: do this instead of using the 'Attestation-Options' header
+            // HttpContext.Session.SetString("fido2.assertionOptions", options.ToJson());
 
             // 5. Return options to client
             return Json(options);

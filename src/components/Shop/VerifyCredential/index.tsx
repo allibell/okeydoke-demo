@@ -118,7 +118,7 @@ export const VerifyCredentialModal = () => {
                                                 />
                                             </div>
                                             <div className="flex-1 pr-12 text-lg font-medium">
-                                                Verify your Farmerpass
+                                                Verify your cloud Farmerpass
                                             </div>
                                         </button>
                                     </div>
