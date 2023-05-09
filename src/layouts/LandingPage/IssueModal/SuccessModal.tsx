@@ -47,7 +47,9 @@ const webauthnRegister = async (email: string, name: string) => {
         body: JSON.stringify({
             username: email,
             displayName: name,
-        })
+        }),
+        // TODO: use cookie instead of 'Attestation-Options' header
+        // credentials: 'include'
     });
     const optsJson = await makeCredentialOptionsResp.json();
     console.log("makeCredentialOptionsResp", makeCredentialOptionsResp, optsJson);
@@ -76,20 +78,19 @@ const webauthnRegister = async (email: string, name: string) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Attestation-Options': JSON.stringify(newOpts)
         },
         body: JSON.stringify(attestationResp),
+        // TODO: use cookie instead of 'Attestation-Options' header
+        // credentials: 'include'
       });
 
     const verificationJSON = await verificationResp.json();
     console.log('Verification Response', JSON.stringify(verificationJSON, null, 2));
-
-    if (verificationJSON && verificationJSON.verified) {
+    if (verificationJSON && verificationJSON.status === 'ok') {
         console.log(`Authenticator registered!`);
     }
-
-}
-
-const webauthnRegisterCredential = async (attestationResp: any) => {
+    return verificationJSON;
 
 }
 

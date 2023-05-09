@@ -89,7 +89,8 @@ public class MyController : Controller
             var options = _fido2.RequestNewCredential(user, existingKeys, authenticatorSelection, attType, exts);
 
             // 4. Temporarily store options, session/in-memory cache/redis/db
-            HttpContext.Session.SetString("fido2.attestationOptions", options.ToJson());
+            // TODO: do this instead of using the 'Attestation-Options' header
+            // HttpContext.Session.SetString("fido2.attestationOptions", options.ToJson());
 
             // 5. return options to client
             return Json(options);
@@ -106,8 +107,18 @@ public class MyController : Controller
     {
         try
         {
+            var origin = HttpContext.Request.Headers["Origin"];
+            // write all request headers to the console
+            foreach (var header in HttpContext.Request.Headers)
+            {
+                Console.WriteLine("header: " + header);
+            }
+            Console.WriteLine("origin: " + origin);
             // 1. get the options we sent the client
-            var jsonOptions = HttpContext.Session.GetString("fido2.attestationOptions");
+            // TODO: do this instead of using the 'Attestation-Options' header
+            // var jsonOptions = HttpContext.Session.GetString("fido2.attestationOptions");
+            var jsonOptions = HttpContext.Request.Headers["Attestation-Options"];
+            Console.WriteLine("jsonOptions: " + jsonOptions);
             var options = CredentialCreateOptions.FromJson(jsonOptions);
 
             // 2. Create callback so that lib can verify credential id is unique to this user
