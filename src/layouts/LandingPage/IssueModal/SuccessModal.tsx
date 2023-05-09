@@ -5,7 +5,7 @@ import { useRecoilState } from "recoil";
 import { useState } from "react";
 import { isIssueSuccessModalVisibleState } from "../../../atoms/modals";
 import { useLockBg } from "../../../hooks/custom/useLockBackground";
-import { startRegistration } from "@simplewebauthn/browser";
+import { startRegistration, startAuthentication } from "@simplewebauthn/browser";
 
 
 const Animations = {
@@ -29,15 +29,14 @@ const Animations = {
     },
 };
 
-
+/**
+     * This value is for sake of demonstration. Pick 32 random
+     * bytes. `salt` can be static for your site or unique per
+     * credential depending on your needs.
+*/
+const FIRST_SALT = new Uint8Array(32).fill(68).buffer;
 
 const webauthnRegister = async (email: string, name: string) => {
-    /**
-       * This value is for sake of demonstration. Pick 32 random
-       * bytes. `salt` can be static for your site or unique per
-       * credential depending on your needs.
-    */
-    const firstSalt = new Uint8Array(32).fill(68).buffer;
 
     const makeCredentialOptionsResp = await fetch("https://localhost:44329/makeCredentialOptions", { 
         method: "POST",
@@ -55,7 +54,7 @@ const webauthnRegister = async (email: string, name: string) => {
     console.log("makeCredentialOptionsResp", makeCredentialOptionsResp, optsJson);
     var newOpts = optsJson;
     newOpts.extensions.largeBlob = { support: 'required' }
-    newOpts.extensions.prf = { eval: { first: firstSalt } }
+    newOpts.extensions.prf = { eval: { first: FIRST_SALT } }
     console.log("newOpts", newOpts)
 
     const attestationResp = await startRegistration(newOpts);
@@ -91,6 +90,29 @@ const webauthnRegister = async (email: string, name: string) => {
         console.log(`Authenticator registered!`);
     }
     return registrationJSON;
+
+}
+
+const webauthnWriteLargeBlob = async (email: string) => {
+    // TODO: support deriving a key from prf
+    const encKey = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+    const largeBlobBytes = new TextEncoder().encode(JSON.stringify(await crypto.subtle.exportKey("jwk", encKey)));
+    const assertionOptionsResp = await fetch("https://localhost:44329/assertionOptions", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: email })
+    });
+    const optsJson = await assertionOptionsResp.json();
+    console.log("assertionOptionsResp", assertionOptionsResp, optsJson);
+    var newOpts = optsJson;
+    newOpts.extensions.prf = { eval: { first: FIRST_SALT } };
+    newOpts.extensions.largeBlob = { write: largeBlobBytes };
+    console.log("newOpts", newOpts);
+    const assertionResp = await startAuthentication(newOpts);
+    console.log('Assertion Response', JSON.stringify(assertionResp, null, 2));
+    // return asserti;
 
 }
 
@@ -214,6 +236,7 @@ export const SuccessModal = ({ farmerName, userEmail, credentialJson }: SuccessM
                                                 bg-blue-500 px-4 py-3 text-white hover:border-2 hover:border-blue-300 hover:bg-white hover:py-2.5 hover:text-blue-500`}
                                             onClick={async () => {
                                                 await webauthnRegister(userEmail, farmerName);
+                                                await webauthnWriteLargeBlob(userEmail);
                                                 setCredentialSendSuccess(true);
                                             }}
                                         >
