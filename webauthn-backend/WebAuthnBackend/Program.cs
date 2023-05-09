@@ -4,15 +4,29 @@ using Fido2NetLib;
 
 namespace WebAuthnBackend;
 
+
+
 public class Program
 {
+    const string corsPolicyName = "AllowLocal";
+    
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddMemoryCache();
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddControllers();
-        builder.Services.AddCors();
+        builder.Services.AddCors(options => 
+        {
+            options.AddPolicy(corsPolicyName, builder =>
+            {
+                builder.WithOrigins("http://localhost:8080")
+                    .WithExposedHeaders("Attestation-Options")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
 
         var config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -37,8 +51,8 @@ public class Program
         builder.Services.AddSession(options =>
         {
             // Set a short timeout for easy testing.
-            options.IdleTimeout = TimeSpan.FromMinutes(2);
-            options.Cookie.HttpOnly = true;
+            options.IdleTimeout = TimeSpan.FromMinutes(10);
+            options.Cookie.HttpOnly = false;
             options.Cookie.IsEssential = true;
             // Strict SameSite mode is required because the default mode used
             // by ASP.NET Core 3 isn't understood by the Conformance Tool
@@ -47,16 +61,9 @@ public class Program
         });
 
         var app = builder.Build();
-        app.UseSession();
-        app.UseStaticFiles();
         app.UseRouting();
-        app.UseCors((corsBuilder) =>
-        {
-            corsBuilder.AllowAnyHeader();
-            corsBuilder.AllowAnyMethod();
-            corsBuilder.AllowAnyOrigin();
-            corsBuilder.Build();
-        });
+        app.UseSession();
+        app.UseCors(corsPolicyName);
 
         app.UseEndpoints(endpoints =>
         {
