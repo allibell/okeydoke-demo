@@ -2,12 +2,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { AlertOctagon, X } from "react-feather";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { authSettingsState } from "../../../atoms/authService";
-import { isVerifyCredentialModalVisibleState } from "../../../atoms/modals";
+import { isVerifyCredentialModalVisibleState, isLocalStorageModalVisibleState } from "../../../atoms/modals";
 import { useLockBg } from "../../../hooks/custom/useLockBackground";
 import { authService } from "../../../services/AuthService";
 import { BronzeMember } from "./BronzeMember";
 import { GoldMember } from "./GoldMember";
 import { SilverMember } from "./SilverMember";
+import { LocalStorageModal } from "./LocalStorageModal";
 
 const Animations = {
     container: {
@@ -30,9 +31,14 @@ const Animations = {
     },
 };
 
+
+
 export const VerifyCredentialModal = () => {
     const [isVisible, setModalVisible] = useRecoilState(
         isVerifyCredentialModalVisibleState
+    );
+    const [isLocalStorageModalVisible, setLocalStorageModalVisible] = useRecoilState(
+        isLocalStorageModalVisibleState
     );
     useLockBg(isVisible);
     const authSettings = useRecoilValue(authSettingsState);
@@ -72,6 +78,9 @@ export const VerifyCredentialModal = () => {
                                             />
                                         </button>
                                     </div>
+                                    {isLocalStorageModalVisible ? (
+                                        <LocalStorageModal/>
+                                    ) : (
                                     <div className="flex w-full flex-col items-start space-y-4 pt-2">
                                         <GoldMember />
                                         <SilverMember />
@@ -103,6 +112,26 @@ export const VerifyCredentialModal = () => {
                                         </div>
                                         <button
                                             className="group flex h-full w-full flex-row items-center space-x-6 rounded-lg bg-blue-500 px-4 py-3 text-white hover:border-2 hover:border-blue-500 hover:bg-white hover:text-blue-500"
+                                            onClick={async () => {
+                                                setLocalStorageModalVisible(true);
+                                            }}
+                                        >
+                                            <div className="relative">
+                                                <img
+                                                    src="images/trinsic-logo-white.png"
+                                                    className="block w-6 group-hover:hidden"
+                                                />
+                                                <img
+                                                    src="images/trinsic-logo-blue.png"
+                                                    className="hidden w-6 group-hover:block"
+                                                />
+                                            </div>
+                                            <div className="flex-1 pr-12 text-lg font-medium">
+                                                Verify your local Farmerpass
+                                            </div>
+                                        </button>
+                                        <button
+                                            className="group flex h-full w-full flex-row items-center space-x-6 rounded-lg bg-blue-300 px-4 py-3 text-white hover:border-2 hover:border-blue-500 hover:bg-white hover:text-blue-300"
                                             onClick={() => {
                                                 authService.login();
                                             }}
@@ -122,6 +151,8 @@ export const VerifyCredentialModal = () => {
                                             </div>
                                         </button>
                                     </div>
+                                    )}
+                                    
                                 </div>
                             </motion.div>
                         </div>

@@ -72,6 +72,7 @@ app.MapPost("/api/issue", async (string email, string name, FoodClass foodType, 
         // TODO: this should throw a clear error when it doesn't work 
         // my example: The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.
         var authToken = Environment.GetEnvironmentVariable("TRINSIC_AUTHTOKEN");
+        string documentJson;
         if (authToken is null)
         {
             throw new Exception("Web app configuration error");
@@ -101,6 +102,7 @@ app.MapPost("/api/issue", async (string email, string name, FoodClass foodType, 
                     produceType = foodType.ToString(),
                 })
             });
+            documentJson = issueResponse.DocumentJson;
 
 
         }
@@ -112,7 +114,8 @@ app.MapPost("/api/issue", async (string email, string name, FoodClass foodType, 
 
         return new IssueResponse()
         {
-            Success = true
+            Success = true,
+            DocumentJson = documentJson
         };
     }
     catch (Exception e)
@@ -147,4 +150,8 @@ public class IssueResponse
     [JsonPropertyName("error")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Error { get; set; }
+
+    [JsonPropertyName("documentJson")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? DocumentJson { get; set; }
 }

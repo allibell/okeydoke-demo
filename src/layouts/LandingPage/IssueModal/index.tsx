@@ -138,10 +138,14 @@ export const IssueModal = ({ userEmail, farmerName, grade, produceType, credenti
         let json = await response.json();
         if (!json.success) {
             throw new Error(json.error)
+        } else if (!json.documentJson) {
+            throw new Error("Could not parse credential in issuance response: ", json);
         }
         else {
-            setCredentialJson(JSON.stringify(json));
-            return json;
+            const credentialJson = json.documentJson;
+            console.log("credentialJson: " + credentialJson);
+            setCredentialJson(credentialJson);
+            return credentialJson;
         }
     };
 

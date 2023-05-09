@@ -35,3 +35,8 @@ export const isIssueSuccessModalVisibleState = atom<boolean>({
     key: "issue-credential-success-modal-visible",
     default: false,
 });
+
+export const isLocalStorageModalVisibleState = atom<boolean>({
+    key: "local-storage-modal-visible",
+    default: false,
+});
