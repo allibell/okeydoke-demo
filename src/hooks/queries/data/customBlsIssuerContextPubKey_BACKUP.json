@@ -1,0 +1,10 @@
+{
+    "@context": [
+        "https://w3id.org/security/v2",
+        "https://w3id.org/security/suites/jws-2020/v1"
+    ],
+    "id": "did:key:z5TcCSFN1yToUnjYHJPrSDrLNVCUmRy2eLxWVNvHHA736QM49R1EggxpiLh9qF1koDyrJR52duyxK5tedGZ11eAvtEzJNc3ctxHfwPUiTBpcNQpG949b16GpyACbaiqPRSDNY5x2CxTsLZxdHfChJdVqPubw8iFnhj7nmYYd68ZuHeV7ZaNi2hGwB5hvhfohys2we5HYw#zUC7LAH1NebNsVNmaLK1snAw87H2g2RURyEB1zC6dWaLaKSa8mdJq8jWGLD4P5HpYB3XqsNASd1wnk3MY6VZGvJ9J7mCnGQNTrpZdkjZRkSrak2oVwA9cC9fX1ktsLxrVirkA27",
+    "type": "Bls12381G2Key2020",
+    "controller": "did:key:z5TcCSFN1yToUnjYHJPrSDrLNVCUmRy2eLxWVNvHHA736QM49R1EggxpiLh9qF1koDyrJR52duyxK5tedGZ11eAvtEzJNc3ctxHfwPUiTBpcNQpG949b16GpyACbaiqPRSDNY5x2CxTsLZxdHfChJdVqPubw8iFnhj7nmYYd68ZuHeV7ZaNi2hGwB5hvhfohys2we5HYw",
+    "publicKeyBase58": "26Kj8Jxw9WsWZAPeAhqUipov7Rk7GPzgF9bcH9f7XqS5mjAfg8ULMTtFPE5wa1sVthexHQDA8QrVPbDmS7exRUAEUyvWGWDh5N73AXXoz6ntw92pYXFyZMDLvQADxvAhsfQo"
+}
