@@ -53,7 +53,6 @@ type VerifyCredentialProps = {
 const handleVerifyCredential = async (
     derivedProof: VerifyCredentialProps["derivedProof"]
 ): Promise<any> => {
-    console.log(JSON.stringify(derivedProof));
     // TODO: use Mattr's open source verify instead of Trinsic's
     // Verify the proof
     console.log(JSON.stringify(derivedProof, null, 2));
