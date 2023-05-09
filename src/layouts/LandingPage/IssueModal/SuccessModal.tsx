@@ -93,7 +93,7 @@ const webauthnRegister = async (email: string, name: string) => {
 
 }
 
-const webauthnWriteLargeBlob = async (email: string) => {
+const webauthnWriteLargeBlob = async (email: string, credentialJson: string) => {
     // TODO: support deriving a key from prf
     const encKey = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     const largeBlobBytes = new TextEncoder().encode(JSON.stringify(await crypto.subtle.exportKey("jwk", encKey)));
@@ -112,6 +112,32 @@ const webauthnWriteLargeBlob = async (email: string) => {
     console.log("newOpts", newOpts);
     const assertionResp = await startAuthentication(newOpts);
     console.log('Assertion Response', JSON.stringify(assertionResp, null, 2));
+
+    const authenticationResp = await fetch('https://localhost:44329/makeAssertion', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Attestation-Options': JSON.stringify(newOpts)
+        },
+        body: JSON.stringify(assertionResp),
+    });
+    const authenticationRespJSON = await authenticationResp.json();
+    if (authenticationRespJSON && authenticationRespJSON.status === 'ok') {
+        console.log(`Authenticator authenticated!`);
+        console.log('🪩🍾 Authentication Response', JSON.stringify(authenticationRespJSON, null, 2));
+
+        // Keep track of this `nonce`, you'll need it to decrypt later!
+        // FYI it's not a secret so you don't have to protect it.
+        console.log(`🚨 encrypting credentialJson`, credentialJson)
+        const nonce = crypto.getRandomValues(new Uint8Array(12));
+        const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv: nonce },
+            encKey,
+            new TextEncoder().encode(credentialJson),
+        );
+        const messageObject = { data: Array.from(new Uint8Array(encrypted)), iv: Array.from(nonce) };
+        localStorage.setItem("encCredential", JSON.stringify(messageObject));
+    }
     // return asserti;
 
 }
@@ -236,7 +262,7 @@ export const SuccessModal = ({ farmerName, userEmail, credentialJson }: SuccessM
                                                 bg-blue-500 px-4 py-3 text-white hover:border-2 hover:border-blue-300 hover:bg-white hover:py-2.5 hover:text-blue-500`}
                                             onClick={async () => {
                                                 await webauthnRegister(userEmail, farmerName);
-                                                await webauthnWriteLargeBlob(userEmail);
+                                                await webauthnWriteLargeBlob(userEmail, credentialJson);
                                                 setCredentialSendSuccess(true);
                                             }}
                                         >

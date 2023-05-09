@@ -168,7 +168,6 @@ public class MyController : Controller
     [Route("/assertionOptions")]
     public ActionResult AssertionOptionsPost([FromBody] AssertionOptionsRequest request)
     {
-        Console.WriteLine("@@@@ HALP");
         try
         {
             var existingCredentials = new List<PublicKeyCredentialDescriptor>();
@@ -221,7 +220,10 @@ public class MyController : Controller
         try
         {
             // 1. Get the assertion options we sent the client
-            var jsonOptions = HttpContext.Session.GetString("fido2.assertionOptions");
+            // TODO: do this instead of using the 'Attestation-Options' header
+            // var jsonOptions = HttpContext.Session.GetString("fido2.attestationOptions");
+            var jsonOptions = HttpContext.Request.Headers["Attestation-Options"];
+            Console.WriteLine("jsonOptions: " + jsonOptions);
             var options = AssertionOptions.FromJson(jsonOptions);
 
             // 2. Get registered credential from database
