@@ -45,13 +45,11 @@ export const Credential = ({credential}: {credential: CredentialDerivedProof}) =
         isVerifiedCredentialModalVisibleState
     );
     const { mutateAsync: verifyCredentialAsync } = useVerifyCredential(() => {
-        console.log("@@@@ say whaaaaat");
         setModalVisible(true);
         setIsVerifyCredentialError(true);
     });
 
     const credentialSubject = credential.credentialSubject;
-    console.log(`haaaaalo`, credentialSubject, credential);
 
     return (
         <div className="flex w-full flex-col items-start gap-1 rounded-lg bg-white p-4">
@@ -62,9 +60,8 @@ export const Credential = ({credential}: {credential: CredentialDerivedProof}) =
                     onClick={async () => {
                         const verifyResp = await verifyCredentialAsync({
                             derivedProof: credential,
-                            auth: true
                         });
-                        console.log(`verifyResp`, verifyResp)
+                        console.log("verifyResp", verifyResp);
 
                         if (
                             // verifyResp.isValid &&

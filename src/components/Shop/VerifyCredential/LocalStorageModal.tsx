@@ -44,7 +44,7 @@ const Animations = {
 
 export const validateEmail = (email: string) => {
     let regexEmail =
-        /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+        /(?:[a-z0-9!#$%&"*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&"*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
     if (email.match(regexEmail)) {
         return true;
     } else {
@@ -53,14 +53,10 @@ export const validateEmail = (email: string) => {
 };
 
 export const LocalStorageModal = () => {
-    // const [isVisible] = useRecoilState(
-    //     isLocalStorageModalVisibleState
-    // );
     const [userEmail, setUserEmail] = useState("");
     const [credentialsVisible, setCredentialsVisible] = useState(false);
     const [credentials, setCredentials] = useState<Array<any>>([]);
 
-    // useLockBg(credentialsVisible);
     const navigate = useNavigate();
 
     const isEmailValid = useMemo(() => {
@@ -82,14 +78,8 @@ export const LocalStorageModal = () => {
 
     useEffect(() => {
         if (isSuccess && credentials.length > 0) {
-            // setModalVisible(false);
-            // reset();
             setCredentialsVisible(true);
-            console.log(`🔑 credentials`, credentials);
-
-            // setTimeout(() => {
-            //     set(true);
-            // }, 200);
+            console.log("🔑📄 Verifiable Credentials", credentials);
         }
     }, [isSuccess, credentials]);
 
@@ -103,7 +93,7 @@ export const LocalStorageModal = () => {
         const assertionOptionsResp = await fetch("https://localhost:44329/assertionOptions", {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: email })
         });
@@ -113,28 +103,28 @@ export const LocalStorageModal = () => {
         newOpts.extensions.largeBlob = { read: true };
         console.log("newOpts", newOpts);
         const assertionResp = await startAuthentication(newOpts);
-        console.log('Assertion Response', JSON.stringify(assertionResp, null, 2));
+        console.log("Assertion Response", JSON.stringify(assertionResp, null, 2));
     
-        const authenticationResp = await fetch('https://localhost:44329/makeAssertion', {
+        const authenticationResp = await fetch("https://localhost:44329/makeAssertion", {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Attestation-Options': JSON.stringify(newOpts)
+                "Content-Type": "application/json",
+                "Attestation-Options": JSON.stringify(newOpts)
             },
             body: JSON.stringify(assertionResp),
         });
         const authenticationRespJSON = await authenticationResp.json();
-        if (authenticationRespJSON && authenticationRespJSON.status === 'ok') {
-            console.log(`Authenticator authenticated!`);
-            console.log('🪩🍾 Authentication Response', JSON.stringify(authenticationRespJSON, null, 2));
+        if (authenticationRespJSON && authenticationRespJSON.status === "ok") {
+            console.log("Authenticator authenticated!");
+            console.log("Authentication Response", JSON.stringify(authenticationRespJSON, null, 2));
 
             const blob = assertionResp.clientExtensionResults?.largeBlob?.blob;
             const encCredential = localStorage.getItem("encCredential");
-            console.log("@@@@@ HAI BLOB", blob, encCredential);
+            console.log("🔒 Encrypted credential (from localStorage): ", blob, encCredential);
             if (blob && encCredential) {
                 // we have our AES key and its encrypted data!
                 const jwk = JSON.parse(new TextDecoder().decode(new Uint8Array(blob)));
-                console.log(`🔑 suspected jwk`, jwk);
+                console.log("🔑 AES key as JWK (from largeBlob)", jwk);
                 const encKey = await crypto.subtle.importKey("jwk", jwk, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
 
                 const credentialMessage = JSON.parse(encCredential);
@@ -142,7 +132,7 @@ export const LocalStorageModal = () => {
                 const nonce = new Uint8Array(credentialMessage.iv);
                 const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: nonce }, encKey, encryptedData);
                 const credential = JSON.parse(new TextDecoder().decode(decrypted));
-                console.log(`🚨👀🔑 decrypted credential`, credential);
+                console.log("🚨 🥳 🔑 Decrypted credential", credential);
                 setCredentials([credential]);
 
             }

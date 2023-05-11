@@ -61,12 +61,12 @@ const webauthnRegister = async (email: string, name: string) => {
     console.log("attestationResp", attestationResp);
     // Simply log the supported extensions
     // TODO: add actual logic to use when supported (e.g. actually use PRF)
-    if (attestationResp.clientExtensionResults.largeBlob.supported === true) {
+    if (attestationResp.clientExtensionResults.largeBlob?.supported === true) {
         console.log("🥳 Largeblob supported!")
     } else {
         console.log("😢 Largeblob not supported!")
     }
-    if (attestationResp.clientExtensionResults.prf.enabled === true) {
+    if (attestationResp.clientExtensionResults.prf?.enabled === true) {
         console.log("🥳 PRF supported!")
     } else {
         console.log("😢 PRF not supported!")
