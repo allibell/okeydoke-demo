@@ -15,7 +15,7 @@
             "applicationUrl": "https://localhost:7133;http://localhost:5268",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "TRINSIC_AUTHTOKEN": "REPLACE ME"
+                "TRINSIC_AUTHTOKEN": "CiVodHRwczovL3RyaW5zaWMuaWQvc2VjdXJpdHkvdjEvb2Jlcm9uEmIKK3Vybjp0cmluc2ljOndhbGxldHM6elV4WUVUTWRwSjVub0JkcGYzTUFjaVQiM3Vybjp0cmluc2ljOmVjb3N5c3RlbXM6aW5zcGlyaW5nLWthbGFtLXpid3hpeG1qZGRmMxowpw0PENdZdYKhVCFTl0oN-7_08JE7iodxUXacXnZkPhkchy9VoDiydqpNLcGFaCVGIgA"
             }
         },
         "IIS Express": {
