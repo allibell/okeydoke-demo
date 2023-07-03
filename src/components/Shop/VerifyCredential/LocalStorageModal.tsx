@@ -219,7 +219,7 @@ export const LocalStorageModal = () => {
                                                     console.log("typedCredential", typedCredential);
                                                     return (
                                                         <motion.div
-                                                            variants={Animations.item}
+                                                            // variants={Animations.item}
                                                             key={typedCredential.issuanceDate}
                                                             className="flex w-full flex-col items-center rounded-lg hover:shadow-m"
                                                         >

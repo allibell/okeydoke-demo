@@ -95,6 +95,11 @@ const webauthnRegister = async (email: string, name: string) => {
 
 const webauthnWriteLargeBlob = async (email: string, credentialJson: string) => {
     // TODO: support deriving a key from prf
+
+    // TODO: better UX here. Note we need a user gesture to start each assertion, so we need 2 gestures 
+    // for "register + write large blob". `alert` is a hacky way to get the second gesture.
+    alert("Almost done!  Your browser will authenticate you one last time to confirm writing an iCloud-backed passkey.")
+
     const encKey = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     const largeBlobBytes = new TextEncoder().encode(JSON.stringify(await crypto.subtle.exportKey("jwk", encKey)));
     const assertionOptionsResp = await fetch("https://localhost:44329/assertionOptions", {
@@ -141,7 +146,6 @@ const webauthnWriteLargeBlob = async (email: string, credentialJson: string) => 
         const messageObject = { data: Array.from(new Uint8Array(encrypted)), iv: Array.from(nonce) };
         localStorage.setItem("encCredential", JSON.stringify(messageObject));
     }
-    // return asserti;
 
 }
 
@@ -371,28 +375,6 @@ export const SuccessModal = ({ farmerName, userEmail, credentialJson }: SuccessM
                                             onClick={async () => {
                                                 // await webauthnRegisterAndWriteLargeBlob(userEmail, farmerName, credentialJson);
                                                 await webauthnRegister(userEmail, farmerName);
-                                            }}
-                                        >
-                                            <div className="relative">
-                                                <img
-                                                    src="images/trinsic-logo-white.png"
-                                                    className={`block w-6 group-hover:hidden`}
-                                                />
-                                                <img
-                                                    src="images/trinsic-logo-blue.png"
-                                                    className={`hidden h-[35.22px] w-6 group-hover:block`}
-                                                />
-                                            </div>
-                                            <div className="flex-1 pr-12 text-lg font-medium">
-                                                Securely save my credential
-                                            </div>
-                                        </button>
-                                        <button
-                                            className={`group flex h-full w-full flex-row items-center space-x-6 rounded-lg
-                                                bg-blue-500 px-4 py-3 text-white hover:border-2 hover:border-blue-300 hover:bg-white hover:py-2.5 hover:text-blue-500`}
-                                            onClick={async () => {
-                                                // await webauthnRegisterAndWriteLargeBlob(userEmail, farmerName, credentialJson);
-                                                // await webauthnRegister(userEmail, farmerName);
                                                 await webauthnWriteLargeBlob(userEmail, credentialJson);
                                                 setCredentialSendSuccess(true);
                                             }}
@@ -408,7 +390,7 @@ export const SuccessModal = ({ farmerName, userEmail, credentialJson }: SuccessM
                                                 />
                                             </div>
                                             <div className="flex-1 pr-12 text-lg font-medium">
-                                                Touch me next lol
+                                                Securely save my credential
                                             </div>
                                         </button>
                                         <button

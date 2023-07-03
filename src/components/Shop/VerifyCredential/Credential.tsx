@@ -54,6 +54,24 @@ export const Credential = ({credential}: {credential: CredentialDerivedProof}) =
     return (
         <div className="flex w-full flex-col items-start gap-1 rounded-lg bg-white p-4">
             <div className="flex flex-row items-center justify-between">
+                <div className="pr-4">
+                    <div className="flex flex-row items-center">
+                        <div className="font-bold">Name:</div>
+                        <div className="ml-2">{credentialSubject.name}</div>
+                    </div>
+                    <div className="flex flex-row items-center">
+                        <div className="font-bold">Produce Type:</div>
+                        <div className="ml-2">{credentialSubject.produceType}</div>
+                    </div>
+                    <div className="flex flex-row items-center">
+                        <div className="font-bold">Certification Grade:</div>
+                        <div className="ml-2">{credentialSubject.certificationGrade}</div>
+                    </div>
+                    <div className="flex flex-row items-center">
+                        <div className="font-bold">ID:</div>
+                        <div className="ml-2">{credentialSubject.id}</div>
+                    </div>
+                </div>
                 <button
                     className={`group flexflex-row items-center space-x-6 rounded-lg
                     px-4 py-3 text-white  bg-blue-500 hover:border-2 hover:border-blue-500 hover:bg-white hover:py-2.5 hover:text-blue-500`}
