@@ -138,11 +138,11 @@ export const VerifyCredentialModal = () => {
                                         >
                                             <div className="relative">
                                                 <img
-                                                    src="images/trinsic-logo-white.png"
+                                                    src="/images/trinsic-logo-white.png"
                                                     className="block w-6 group-hover:hidden"
                                                 />
                                                 <img
-                                                    src="images/trinsic-logo-blue.png"
+                                                    src="/images/trinsic-logo-blue.png"
                                                     className="hidden w-6 group-hover:block"
                                                 />
                                             </div>
