@@ -10,6 +10,14 @@ import {  startAuthentication } from "@simplewebauthn/browser";
 import { Credential } from "./Credential";
 import EmailInput from "../../../layouts/LandingPage/IssueModal/EmailInput";
 import { CredentialDerivedProof } from "../../../models/credential";
+import { deriveEncryptionKey, importKeyPair } from "../../../layouts/LandingPage/IssueModal/SuccessModal";
+import { ExportedKeyPair } from "../../../models/Passkey";
+
+
+
+
+
+
 
 
 const Animations = {
@@ -99,12 +107,14 @@ export const LocalStorageModal = () => {
         });
         const optsJson = await assertionOptionsResp.json();
         console.log("assertionOptionsResp", assertionOptionsResp, optsJson);
-        var newOpts = optsJson;
-        newOpts.extensions.largeBlob = { read: true };
+        let newOpts = optsJson;
+        newOpts = {...newOpts, extensions:{
+            largeBlob:{ read: true }
+        }}
         console.log("newOpts", newOpts);
         const assertionResp = await startAuthentication(newOpts);
         console.log("Assertion Response", JSON.stringify(assertionResp, null, 2));
-    
+
         const authenticationResp = await fetch("https://localhost:44329/makeAssertion", {
             method: "POST",
             headers: {
@@ -120,12 +130,18 @@ export const LocalStorageModal = () => {
 
             const blob = assertionResp.clientExtensionResults?.largeBlob?.blob;
             const encCredential = localStorage.getItem("encCredential");
-            console.log("🔒 Encrypted credential (from localStorage): ", blob, encCredential);
+            console.log("🔒 Encrypted credential (from localStorage): ", blob, assertionResp, encCredential);
             if (blob && encCredential) {
                 // we have our AES key and its encrypted data!
-                const jwk = JSON.parse(new TextDecoder().decode(new Uint8Array(blob)));
-                console.log("🔑 AES key as JWK (from largeBlob)", jwk);
-                const encKey = await crypto.subtle.importKey("jwk", jwk, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+                const exportedKeypair:ExportedKeyPair = JSON.parse(new TextDecoder().decode(new Uint8Array(blob)));
+                console.log("🔑 P256 key pair as JWK (from largeBlob)", exportedKeypair);
+                const importedKeypair =  await importKeyPair(exportedKeypair)
+                const encKey = await deriveEncryptionKey(importedKeypair)
+
+
+
+
+
 
                 const credentialMessage = JSON.parse(encCredential);
                 const encryptedData = new Uint8Array(credentialMessage.data);

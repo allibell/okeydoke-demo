@@ -9,18 +9,18 @@ namespace WebAuthnBackend;
 public class Program
 {
     const string corsPolicyName = "AllowLocal";
-    
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddMemoryCache();
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddControllers();
-        builder.Services.AddCors(options => 
+        builder.Services.AddCors(options =>
         {
             options.AddPolicy(corsPolicyName, builder =>
             {
-                builder.WithOrigins("http://localhost:8080")
+                builder.WithOrigins("http://localhost:3000")
                     .WithExposedHeaders("Attestation-Options")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
